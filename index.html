@@ -67,20 +67,28 @@
       <circle class="state" cx="320" cy="280" r="40" />
       <text class="label" x="320" y="285" text-anchor="middle">Reverse Cross</text>
 
-      <!-- transitions -->
-      <path class="link" d="M190,100 C140,160 100,200 80,240" onclick="showTransition('Basic to Cross')" />
-      <path class="link" d="M210,100 C260,160 300,200 320,240" onclick="showTransition('Basic to Reverse')" />
+      <!-- transitions: all arrows end just outside the states, do not enter circles, and do not collide -->
+      <!-- Basic to Cross -->
+      <path class="link" d="M200,100 C160,180 120,220 105,245" onclick="showTransition('Basic to Cross')" />
+      <!-- Basic to Reverse -->
+      <path class="link" d="M200,100 C240,180 280,220 295,245" onclick="showTransition('Basic to Reverse')" />
 
-      <path class="link" d="M120,280 L280,280" onclick="showTransition('Cross to Reverse')" />
-      <path class="link" d="M280,270 L120,270" onclick="showTransition('Reverse to Cross')" />
+      <!-- Cross to Reverse (curved, ends before Reverse Cross) -->
+      <path class="link" d="M120,280 C170,340 230,340 280,280" onclick="showTransition('Cross to Reverse')" />
+      <!-- Reverse to Cross (curved, ends before Cross) -->
+      <path class="link" d="M280,270 C230,210 170,210 120,270" onclick="showTransition('Reverse to Cross')" />
 
-      <path class="link" d="M200,20 C180,0 220,0 200,20" onclick="showTransition('Basic Loop')" />
-      <path class="link" d="M80,320 C60,360 100,360 80,320" onclick="showTransition('Cross Loop')" />
-      <path class="link" d="M320,320 C300,360 340,360 320,320" onclick="showTransition('Reverse Loop')" />
+      <!-- Basic Loop (above, outside the circle) -->
+      <path class="link" d="M200,20 C250,-30 150,-30 200,20" onclick="showTransition('Basic Loop')" />
+      <!-- Cross Loop (left, outside the circle) -->
+      <path class="link" d="M80,320 C30,370 130,370 80,320" onclick="showTransition('Cross Loop')" />
+      <!-- Reverse Loop (right, outside the circle) -->
+      <path class="link" d="M320,320 C370,370 270,370 320,320" onclick="showTransition('Reverse Loop')" />
 
-      <!-- returns to Basic -->
-      <path class="link" d="M80,240 C100,180 140,120 190,100" onclick="showTransition('Cross to Basic')" />
-      <path class="link" d="M320,240 C300,180 260,120 210,100" onclick="showTransition('Reverse to Basic')" />
+      <!-- Cross to Basic (curved, ends before Basic) -->
+      <path class="link" d="M105,245 C80,160 160,40 200,100" onclick="showTransition('Cross to Basic')" />
+      <!-- Reverse to Basic (curved, ends before Basic) -->
+      <path class="link" d="M295,245 C320,160 240,40 200,100" onclick="showTransition('Reverse to Basic')" />
     </svg>
   </div>
 

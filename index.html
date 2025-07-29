@@ -93,8 +93,8 @@
   <script>
     const transitions = {
       "Basic to Cross": [
-        { title: "Cross Basic", description: "Standard cross-body lead.", url: "https://www.youtube.com/watch?v=XXXXX" },
-        { title: "Cross with Styling", description: "Adds arm styling.", url: "https://www.youtube.com/watch?v=XXXX2" }
+        { title: "Cross body lead omuza kıstırmalı", url: "https://youtube.com/shorts/SEV4fZgS6z0?si=SORUkqH4K6YwUnJD" },
+        { title: "Cross body lead boyna kondurup çıkartmalı", url: "https://youtube.com/shorts/wfK4mTDzB34?si=jIEBX4SSTiJo5huC" }
       ],
       "Basic to Reverse": [
         { title: "Reverse Start", description: "Lead sets up a reverse cross-body from basic step.", url: "https://www.youtube.com/watch?v=YYYYY" },
@@ -136,9 +136,11 @@
         const div = document.createElement("div");
         div.className = "move-item";
         div.innerHTML = `
-          <h3>${move.title}</h3>
-          <p><strong>Description:</strong> ${move.description}</p>
-          <p><a href="${move.url}" target="_blank">Watch</a></p>
+          <h3>
+            ${move.title}
+            <a href="${move.url}" target="_blank" style="font-size:0.8em; margin-left:8px;">Watch</a>
+          </h3>
+          ${move.description ? `<p><strong>Description:</strong> ${move.description}</p>` : ""}
         `;
         moveList.appendChild(div);
       });

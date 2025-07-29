@@ -29,13 +29,13 @@
       fill: white;
       stroke: black;
       stroke-width: 2;
-      cursor: default;
     }
     .label {
       font-weight: bold;
     }
     .page {
       padding: 20px;
+      display: none;
     }
     .back-button {
       margin-top: 20px;
@@ -43,122 +43,110 @@
       padding: 10px 15px;
       cursor: pointer;
     }
+    .move-item {
+      margin-bottom: 20px;
+    }
   </style>
 </head>
 <body>
   <div id="fsm-view">
     <svg viewBox="0 0 400 400">
-      <!-- arrowhead definition -->
       <defs>
-        <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="0" refY="3" orient="auto">
+        <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="6" refY="3" orient="auto">
           <polygon points="0 0, 8 3, 0 6" fill="#555" />
         </marker>
       </defs>
 
       <!-- states -->
-      <circle class="state" cx="200" cy="60"  r="40" />
-      <text   class="label"  x="200" y="65" text-anchor="middle">Basic</text>
+      <circle class="state" cx="200" cy="60" r="40" />
+      <text class="label" x="200" y="65" text-anchor="middle">Basic</text>
 
-      <circle class="state" cx="80"  cy="280" r="40" />
-      <text   class="label"  x="80"  y="285" text-anchor="middle">Cross</text>
+      <circle class="state" cx="80" cy="280" r="40" />
+      <text class="label" x="80" y="285" text-anchor="middle">Cross</text>
 
       <circle class="state" cx="320" cy="280" r="40" />
-      <text   class="label"  x="320" y="285" text-anchor="middle">Reverse Cross</text>
+      <text class="label" x="320" y="285" text-anchor="middle">Reverse Cross</text>
 
-      <!-- transitions BETWEEN states -->
-      <path class="link"
-            d="M190,100 C140,160 100,200 80,240"
-            onclick="showTransition('Basic to Cross')" />
+      <!-- transitions -->
+      <path class="link" d="M190,100 C140,160 100,200 80,240" onclick="showTransition('Basic to Cross')" />
+      <path class="link" d="M210,100 C260,160 300,200 320,240" onclick="showTransition('Basic to Reverse')" />
 
-      <path class="link"
-            d="M210,100 C260,160 300,200 320,240"
-            onclick="showTransition('Basic to Reverse')" />
+      <path class="link" d="M120,280 L280,280" onclick="showTransition('Cross to Reverse')" />
+      <path class="link" d="M280,270 L120,270" onclick="showTransition('Reverse to Cross')" />
 
-      <!-- double-headed between Cross↔Reverse -->
-      <path class="link"
-            d="M120,280 L280,280"
-            onclick="showTransition('Cross to Reverse')" />
+      <path class="link" d="M200,20 C180,0 220,0 200,20" onclick="showTransition('Basic Loop')" />
+      <path class="link" d="M80,320 C60,360 100,360 80,320" onclick="showTransition('Cross Loop')" />
+      <path class="link" d="M320,320 C300,360 340,360 320,320" onclick="showTransition('Reverse Loop')" />
 
-      <path class="link"
-            d="M280,280 L120,280"
-            onclick="showTransition('Reverse to Cross')" />
-
-      <!-- self-loops -->
-      <path class="link"
-            d="M200,20 C180,0 220,0 200,20"
-            onclick="showTransition('Basic Loop')" />
-
-      <path class="link"
-            d="M80,320 C60,360 100,360 80,320"
-            onclick="showTransition('Cross Loop')" />
-
-      <path class="link"
-            d="M320,320 C300,360 340,360 320,320"
-            onclick="showTransition('Reverse Loop')" />
+      <!-- returns to Basic -->
+      <path class="link" d="M80,240 C100,180 140,120 190,100" onclick="showTransition('Cross to Basic')" />
+      <path class="link" d="M320,240 C300,180 260,120 210,100" onclick="showTransition('Reverse to Basic')" />
     </svg>
   </div>
 
-  <div id="transition-view" class="page" style="display: none;">
+  <div id="transition-view" class="page">
     <h2 id="move-name">Move Title</h2>
-    <p><strong>Alias:</strong> <span id="move-alias"></span></p>
-    <p><strong>Description:</strong> <span id="move-description"></span></p>
-    <p><strong>YouTube:</strong> <a id="move-link" href="#" target="_blank">Watch</a></p>
+    <div id="move-list"></div>
     <button class="back-button" onclick="backToFSM()">⬅ Back</button>
   </div>
 
   <script>
     const transitions = {
-      "Basic to Cross": {
-        alias: "Cross In",
-        description: "Lead invites cross-body lead with gentle push on 5.",
-        link: "https://www.youtube.com/watch?v=XXXXX"
-      },
-      "Basic to Reverse": {
-        alias: "Reverse Start",
-        description: "Lead sets up a reverse cross-body from basic step.",
-        link: "https://www.youtube.com/watch?v=YYYYY"
-      },
-      "Cross to Reverse": {
-        alias: "Combo Switch",
-        description: "Transition from regular cross into reverse version.",
-        link: "https://www.youtube.com/watch?v=ZZZZZ"
-      },
-      "Reverse to Cross": {
-        alias: "Return Cross",
-        description: "From reverse, lead returns to standard cross-body.",
-        link: "https://www.youtube.com/watch?v=WWWWW"
-      },
-      "Basic Loop": {
-        alias: "Basic Repeat",
-        description: "Repeat basic step, reset timing or connection.",
-        link: "https://www.youtube.com/watch?v=VVVVV"
-      },
-      "Cross Loop": {
-        alias: "Cross Styling",
-        description: "Looping in cross to apply styling.",
-        link: "https://www.youtube.com/watch?v=UUUUU"
-      },
-      "Reverse Loop": {
-        alias: "Reverse Practice",
-        description: "Repeat reverse to reinforce muscle memory.",
-        link: "https://www.youtube.com/watch?v=TTTTT"
-      }
+      "Basic to Cross": [
+        { title: "Cross Basic", description: "Standard cross-body lead.", url: "https://www.youtube.com/watch?v=XXXXX" },
+        { title: "Cross with Styling", description: "Adds arm styling.", url: "https://www.youtube.com/watch?v=XXXX2" }
+      ],
+      "Basic to Reverse": [
+        { title: "Reverse Start", description: "Lead sets up a reverse cross-body from basic step.", url: "https://www.youtube.com/watch?v=YYYYY" },
+        { title: "Reverse Hook", description: "Uses hook turn as transition.", url: "https://www.youtube.com/watch?v=YYYY2" }
+      ],
+      "Cross to Reverse": [
+        { title: "Cross to Reverse", description: "Switch into reverse variation.", url: "https://www.youtube.com/watch?v=ZZZZZ" }
+      ],
+      "Reverse to Cross": [
+        { title: "Return to Cross", description: "Exit reverse to return to cross lead.", url: "https://www.youtube.com/watch?v=WWWWW" }
+      ],
+      "Basic Loop": [
+        { title: "Basic Repeat", description: "Repeat basic step.", url: "https://www.youtube.com/watch?v=VVVVV" }
+      ],
+      "Cross Loop": [
+        { title: "Cross Styling", description: "Loop to add styling.", url: "https://www.youtube.com/watch?v=UUUUU" }
+      ],
+      "Reverse Loop": [
+        { title: "Reverse Practice", description: "Loop reverse step.", url: "https://www.youtube.com/watch?v=TTTTT" }
+      ],
+      "Cross to Basic": [
+        { title: "Reset to Basic", description: "Return from cross to basic.", url: "https://www.youtube.com/watch?v=CCCC1" }
+      ],
+      "Reverse to Basic": [
+        { title: "Reverse Exit", description: "Back to basic from reverse.", url: "https://www.youtube.com/watch?v=RRRR1" }
+      ]
     };
 
     function showTransition(name) {
       document.getElementById("fsm-view").style.display = "none";
       document.getElementById("transition-view").style.display = "block";
 
-      const move = transitions[name];
-      document.getElementById("move-name").textContent        = name;
-      document.getElementById("move-alias").textContent       = move.alias;
-      document.getElementById("move-description").textContent = move.description;
-      document.getElementById("move-link").href               = move.link;
+      document.getElementById("move-name").textContent = name;
+      const moveList = document.getElementById("move-list");
+      moveList.innerHTML = "";
+
+      const moves = transitions[name] || [];
+      moves.forEach(move => {
+        const div = document.createElement("div");
+        div.className = "move-item";
+        div.innerHTML = `
+          <h3>${move.title}</h3>
+          <p><strong>Description:</strong> ${move.description}</p>
+          <p><a href="${move.url}" target="_blank">Watch</a></p>
+        `;
+        moveList.appendChild(div);
+      });
     }
 
     function backToFSM() {
-      document.getElementById("fsm-view").style.display       = "block";
-      document.getElementById("transition-view").style.display= "none";
+      document.getElementById("fsm-view").style.display = "block";
+      document.getElementById("transition-view").style.display = "none";
     }
   </script>
 </body>
